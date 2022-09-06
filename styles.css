@@ -1,0 +1,20 @@
+body {
+  display: grid;
+  justify-items: center;
+}
+
+.game-controls {
+  padding-bottom: 20px;
+}
+
+.game-board {
+  border: 1px solid blue;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.row-1>div, .row-2>div, .row-3>div {
+  border: 1px solid green;
+  width: 75px;
+  height: 75px;
+}
