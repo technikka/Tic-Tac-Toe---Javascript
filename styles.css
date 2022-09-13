@@ -5,6 +5,9 @@ body {
 
 .game-controls {
   padding-bottom: 20px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
 }
 
 .game-board {
@@ -13,10 +16,19 @@ body {
   grid-template-columns: repeat(3, 1fr);
 }
 
-.row-1>div, .row-2>div, .row-3>div {
+.game-board>div>div{
   border: 1px solid green;
   width: 75px;
   height: 75px;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  font-size: xx-large;
+}
+
+.game-board>div>div:hover {
+  cursor: pointer;
+  background: yellow;
 }
 
 .player-modal {
