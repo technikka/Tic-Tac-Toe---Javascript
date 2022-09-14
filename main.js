@@ -9,21 +9,21 @@ const Player = (token) => {
 
 
 const GameBoard = (() => {
-  let row1 = Array(3).fill(' ');
-  let row2 = Array(3).fill(' ');
-  let row3 = Array(3).fill(' ');
+  let col1 = Array(3).fill(' ');
+  let col2 = Array(3).fill(' ');
+  let col3 = Array(3).fill(' ');
 
-  // row needs 'row1, row2, row3', and column needs 0, 1, 2
-  const updateBoard = (square) => {
-    console.log(GameControls.playableSquare);
+  const updateBoardDisplay = (square) => {
     square.removeEventListener('click', GameControls.playableSquare);
     square.classList.remove('playable-square');
-
-    // row[column] = Game.getTurn();
-    // console.log(row1, row2, row3);
   }
 
-  return { updateBoard, row1, row2, row3 }
+  // column needs 'col1', 'col2', or 'col3' and row needs 0, 1, 2
+  const updateBoardArray = (column, row) => {
+    eval(column)[row] = Game.getTurn();
+    console.log(col1, col2, col3);
+  }
+  return { updateBoardDisplay, updateBoardArray, col1, col2, col3 }
 })();
 
 
@@ -122,9 +122,26 @@ const Game = (() => {
     }
   }
 
+  const _findRow = (square) => {
+    const isSquare = (element) => {
+      if (element.classList !== undefined &&
+        element.localName === "div") {
+        return 1
+      } else {
+        return 0
+      }
+    }
+    let siblings = square.parentNode.childNodes;
+    let squares = Array.from(siblings).filter(isSquare);
+    return squares.indexOf(square);
+  }
+
   const playTurn = (square) => {
+    let column = square.parentNode.classList[0];
+    let row = _findRow(square);
     placeToken(square);
-    GameBoard.updateBoard(square);
+    GameBoard.updateBoardArray(column, row);
+    GameBoard.updateBoardDisplay(square);
     toggleTurn();
     GameControls.displayPlayerTurn();
   }
