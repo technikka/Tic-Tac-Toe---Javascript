@@ -24,9 +24,14 @@ body {
   justify-content: center;
   align-items: center;
   font-size: xx-large;
+  cursor: not-allowed;
 }
 
-.game-board>div>div:hover {
+.playable-square {
+  cursor: not-allowed;
+}
+
+.playable-square:hover {
   cursor: pointer;
   background: yellow;
 }
