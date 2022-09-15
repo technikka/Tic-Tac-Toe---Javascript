@@ -159,15 +159,17 @@ const Game = (() => {
   }
 
   const playTurn = (square) => {
-    let column = square.parentNode.classList[0];
-    let row = _findRow(square);
-    placeToken(square);
-    GameBoard.updateBoardArray(column, row);
-    GameBoard.updateBoardDisplay(square);
-    toggleTurn();
-    GameControls.displayPlayerTurn();
-    if (isTie() === true) {
-      GameControls.toggleAlertModal('Tie!');
+    if (square.classList.contains('playable-square')) {
+      let column = square.parentNode.classList[0];
+      let row = _findRow(square);
+      placeToken(square);
+      GameBoard.updateBoardArray(column, row);
+      GameBoard.updateBoardDisplay(square);
+      toggleTurn();
+      GameControls.displayPlayerTurn();
+      if (isTie() === true) {
+        GameControls.toggleAlertModal('Tie!');
+      }
     }
   }
 
