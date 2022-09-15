@@ -21,7 +21,7 @@ const GameBoard = (() => {
   // column needs 'col1', 'col2', or 'col3' and row needs 0, 1, 2
   const updateBoardArray = (column, row) => {
     eval(column)[row] = Game.getTurn();
-    console.log(col1, col2, col3);
+    // console.log(col1, col2, col3);
   }
   return { updateBoardDisplay, updateBoardArray, col1, col2, col3 }
 })();
@@ -34,6 +34,23 @@ const GameControls = (() => {
     modal.classList.toggle('show');
     backdrop.classList.toggle('show');
     document.querySelector('.player-1-name').focus();
+  }
+
+  const toggleAlertModal = (alert) => {
+    let modal = document.querySelector('.alert-modal');
+    let backdrop = document.querySelector('.backdrop');
+    modal.classList.toggle('show');
+    backdrop.classList.toggle('show');
+    modal.textContent = alert;
+  }
+
+  const _closeModals = () => {
+    let playerModal = document.querySelector('.player-modal');
+    let alertModal = document.querySelector('.alert-modal');
+    let backdrop = document.querySelector('.backdrop');
+    playerModal.classList.remove('show');
+    alertModal.classList.remove('show');
+    backdrop.classList.remove('show');
   }
 
   const displayPlayerTurn = () => {
@@ -50,14 +67,14 @@ const GameControls = (() => {
     }
   }
 
-  const playableSquare = function() {
+  const _playableSquare = function() {
     Game.playTurn(this);
   }
 
   const setEventListeners = () => {
     const nameBtn = document.querySelector('.name-btn');
     nameBtn.addEventListener('click', event => {
-      GameControls.toggleSetPlayerModal();
+      toggleSetPlayerModal();
     })
     const setBtn = document.querySelector('.player-modal > section > button');
     setBtn.addEventListener('click', event => {
@@ -65,20 +82,25 @@ const GameControls = (() => {
       Game.setPlayerNames();
       displayPlayerTurn();
     })
-
     const playSquares = document.querySelectorAll('.game-board > div > div');
-
     for (let i = 0; i < playSquares.length; i++) {
-      playSquares[i].addEventListener('click', playableSquare);
+      playSquares[i].addEventListener('click', _playableSquare);
       playSquares[i].classList.add('playable-square');
     }
+    const body = document.querySelector('body');
+    document.addEventListener('click', event => {
+      let target = event.target;
+      if (target === body) {
+        _closeModals();
+      }
+    })
   }
 
   return { 
     setEventListeners, 
     toggleSetPlayerModal,
     displayPlayerTurn,
-    playableSquare
+    toggleAlertModal
   }
 })();
 
@@ -144,6 +166,18 @@ const Game = (() => {
     GameBoard.updateBoardDisplay(square);
     toggleTurn();
     GameControls.displayPlayerTurn();
+    if (isTie() === true) {
+      GameControls.toggleAlertModal('Tie!');
+    }
+  }
+
+  const isTie = () => {
+    let playableSquares = document.querySelector('.playable-square');
+    if (playableSquares === null) {
+      return true
+    } else {
+      return false
+    }
   }
 
   return { 

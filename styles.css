@@ -36,7 +36,7 @@ body {
   background: yellow;
 }
 
-.player-modal {
+.player-modal, .alert-modal {
   padding: 20px;
   background: white;
   z-index: 5;
@@ -52,7 +52,7 @@ body {
   transition: top 0.3s, opacity 0.3s;
 }
 
-.player-modal.show {
+.player-modal.show, .alert-modal.show {
   opacity: 100%;
   pointer-events: all;
   top: 50%;
