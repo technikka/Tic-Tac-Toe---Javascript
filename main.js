@@ -9,9 +9,9 @@ const Player = (token) => {
 
 
 const GameBoard = (() => {
-  let col1 = Array(3).fill(' ');
-  let col2 = Array(3).fill(' ');
-  let col3 = Array(3).fill(' ');
+  let col1 = Array(3).fill('');
+  let col2 = Array(3).fill('');
+  let col3 = Array(3).fill('');
 
   const updateBoardDisplay = (square) => {
     square.removeEventListener('click', GameControls.playableSquare);
@@ -167,8 +167,11 @@ const Game = (() => {
       GameBoard.updateBoardDisplay(square);
       toggleTurn();
       GameControls.displayPlayerTurn();
-      if (isTie() === true) {
+      if (isTie()) {
         GameControls.toggleAlertModal('Tie!');
+      }
+      if (isWin()) {
+        GameControls.toggleAlertModal('Win!');
       }
     }
   }
@@ -179,6 +182,47 @@ const Game = (() => {
       return true
     } else {
       return false
+    }
+  }
+
+  const isWin = () => {
+    const _allAreSame = (array) => {
+      if (new Set(array).size === 1) {
+        return true
+      }
+    }
+    const _notEmptyString = (item) => {
+      if (item.length > 0) {
+        return true
+      }
+    }
+    const _colWin = () => {
+      let columns = [GameBoard.col1, GameBoard.col2, GameBoard.col3]
+      for (let i = 0; i < columns.length; i++) {
+        let array = columns[i]
+        if (_allAreSame(array) && _notEmptyString(array[0])) {
+          return true
+        }
+      }
+    }
+    const _rowWin = () => {
+      for (let i = 0; i < 3; i++) {
+        let rows = [GameBoard.col1[i], GameBoard.col2[i], GameBoard.col3[i]]
+        if (_allAreSame(rows) && _notEmptyString(rows[0])) {
+          return true
+        }
+      }
+    }
+    const _diagonalWin = () => {
+      let diagonal1 = [GameBoard.col1[0], GameBoard.col2[1], GameBoard.col3[2]]
+      let diagonal2 = [GameBoard.col1[2], GameBoard.col2[1], GameBoard.col3[0]]
+      if ((_allAreSame(diagonal1) && _notEmptyString(diagonal1[0])) || (_allAreSame(diagonal2) && _notEmptyString(diagonal2[0]))) {
+        return true
+      }
+    }
+
+    if (_rowWin() || _colWin() || _diagonalWin()) {
+      return true
     }
   }
 
