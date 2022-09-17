@@ -163,6 +163,14 @@ const Game = (() => {
     return squares.indexOf(square);
   }
 
+  const gameOver = () => {
+    const playSquares = document.querySelectorAll('.game-board > div > div');
+    for (let i=0; i < playSquares.length; i++) {
+      playSquares[i].removeEventListener('click', GameControls.playableSquare);
+      playSquares[i].classList.remove('playable-square');
+    }
+  }
+
   const playTurn = (square) => {
     if (square.classList.contains('playable-square')) {
       let column = square.parentNode.classList[0];
@@ -172,8 +180,8 @@ const Game = (() => {
       GameBoard.updateBoardDisplay(square);
       if (isTie()) {
         GameControls.toggleAlertModal('Tie!');
-        // remove events from playable-squares
         GameControls.displayPlayerTurn('Tie!');
+        gameOver();
         return
         // option to play again
       }
@@ -196,6 +204,7 @@ const Game = (() => {
         }
         GameControls.toggleAlertModal(`${_winner()} wins!`);
         GameControls.displayPlayerTurn(`${_winner()} wins!`);
+        gameOver();
         return
       }
       toggleTurn();
