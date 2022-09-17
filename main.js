@@ -13,6 +13,12 @@ const GameBoard = (() => {
   let col2 = Array(3).fill('');
   let col3 = Array(3).fill('');
 
+  const resetBoard = () => {
+    col1.splice(0, 3, '', '', '');
+    col2.splice(0, 3, '', '', '');
+    col3.splice(0, 3, '', '', '');
+  }
+
   const updateBoardDisplay = (square) => {
     square.removeEventListener('click', GameControls.playableSquare);
     square.classList.remove('playable-square');
@@ -22,7 +28,7 @@ const GameBoard = (() => {
   const updateBoardArray = (column, row) => {
     eval(column)[row] = Game.getTurn();
   }
-  return { updateBoardDisplay, updateBoardArray, col1, col2, col3 }
+  return { updateBoardDisplay, updateBoardArray, resetBoard, col1, col2, col3 }
 })();
 
 
@@ -56,7 +62,6 @@ const GameControls = (() => {
   const displayPlayerTurn = (replacementText) => {
     const turnDiv = document.querySelector('.player-turn');
     if (replacementText) {
-      console.log(replacementText);
       turnDiv.textContent = replacementText
       return
     }
@@ -99,6 +104,17 @@ const GameControls = (() => {
         _closeModals();
       }
     })
+    const newGameBtn = document.querySelector('.new-game-btn');
+    newGameBtn.addEventListener('click', event => {
+      for (let i=0; i < playSquares.length; i++) {
+        playSquares[i].textContent = '';
+        playSquares[i].classList.add('playable-square');
+        playSquares[i].addEventListener('click', _playableSquare);
+      }
+      GameBoard.resetBoard();
+      Game.resetTurn();
+      displayPlayerTurn();
+    })
   }
 
   return { 
@@ -117,6 +133,10 @@ const Game = (() => {
 
   const getTurn = () => {
     return currentTurn
+  }
+
+  const resetTurn = () => {
+    currentTurn = "X"
   }
 
   const toggleTurn = () => {
@@ -267,7 +287,8 @@ const Game = (() => {
     createPlayers, 
     setPlayerNames, 
     placeToken,
-    getTurn, 
+    getTurn,
+    resetTurn, 
     player1, 
     player2 
   }
