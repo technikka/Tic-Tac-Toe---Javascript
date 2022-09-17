@@ -21,7 +21,6 @@ const GameBoard = (() => {
   // column needs 'col1', 'col2', or 'col3' and row needs 0, 1, 2
   const updateBoardArray = (column, row) => {
     eval(column)[row] = Game.getTurn();
-    // console.log(col1, col2, col3);
   }
   return { updateBoardDisplay, updateBoardArray, col1, col2, col3 }
 })();
@@ -44,6 +43,7 @@ const GameControls = (() => {
     modal.textContent = alert;
   }
 
+  // not redundant, method needed for click away to close functionality.
   const _closeModals = () => {
     let playerModal = document.querySelector('.player-modal');
     let alertModal = document.querySelector('.alert-modal');
@@ -53,10 +53,15 @@ const GameControls = (() => {
     backdrop.classList.remove('show');
   }
 
-  const displayPlayerTurn = () => {
+  const displayPlayerTurn = (replacementText) => {
     const turnDiv = document.querySelector('.player-turn');
+    if (replacementText) {
+      console.log(replacementText);
+      turnDiv.textContent = replacementText
+      return
+    }
     const turn = Game.getTurn();
-    if (Game.player1.getName() !== undefined ) {
+    if (Game.player1.getName() !== undefined) {
       if (turn === 'X') {
         turnDiv.textContent = `Turn: ${Game.player1.getName()}`
       } else {
@@ -165,14 +170,36 @@ const Game = (() => {
       placeToken(square);
       GameBoard.updateBoardArray(column, row);
       GameBoard.updateBoardDisplay(square);
-      toggleTurn();
-      GameControls.displayPlayerTurn();
       if (isTie()) {
         GameControls.toggleAlertModal('Tie!');
+        // remove events from playable-squares
+        GameControls.displayPlayerTurn('Tie!');
+        return
+        // option to play again
       }
       if (isWin()) {
-        GameControls.toggleAlertModal('Win!');
+        const _winner = () => { 
+          const _tokenOwner = (token) => {
+            if (token === 'X') {
+              return Game.player1.getName();
+            } else {
+              return Game.player2.getName();
+            }
+          }
+          let token = Game.getTurn();
+          if (Game.player1.getName() !== undefined) {
+            let name = _tokenOwner(token);
+            return name
+          } else {
+            return token
+          }
+        }
+        GameControls.toggleAlertModal(`${_winner()} wins!`);
+        GameControls.displayPlayerTurn(`${_winner()} wins!`);
+        return
       }
+      toggleTurn();
+      GameControls.displayPlayerTurn();
     }
   }
 
