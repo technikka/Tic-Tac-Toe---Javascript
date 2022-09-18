@@ -1,29 +1,69 @@
 body {
   display: grid;
   justify-items: center;
+  font-family: 'arial', sans-serif;
+}
+
+
+header {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+}
+
+h1 {
+  font-size: 24px;
+  text-align: center;
 }
 
 .game-controls {
-  padding-bottom: 20px;
+  padding-top: 10px;
+  padding-bottom: 40px;
   display: flex;
   flex-direction: row;
   gap: 10px;
 }
 
 .game-board {
-  border: 1px solid blue;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
 }
 
+.col1 {
+  border-right: 2px solid #e6b800;
+}
+
+.col2 {
+  border-right: 2px solid #e6b800;
+  border-left: 2px solid #e6b800;
+}
+
+.col3 {
+  border-left: 2px solid #e6b800;
+}
+
+.game-board>div>div:first-child {
+  border-bottom: 2px solid #e6b800;
+}
+
+.game-board>div>div:nth-child(2){
+  border-bottom: 2px solid #e6b800;
+  border-top: 2px solid #e6b800;
+}
+
+.game-board>div>div:nth-child(3) {
+  border-top: 2px solid #e6b800;
+  
+}
+
 .game-board>div>div{
-  border: 1px solid green;
   width: 75px;
   height: 75px;
   display: grid;
   justify-content: center;
   align-items: center;
   font-size: xx-large;
+  font-weight: bold;
   cursor: not-allowed;
 }
 
@@ -33,7 +73,6 @@ body {
 
 .playable-square:hover {
   cursor: pointer;
-  background: yellow;
 }
 
 .player-modal, .alert-modal {
@@ -55,7 +94,7 @@ body {
 .player-modal.show, .alert-modal.show {
   opacity: 100%;
   pointer-events: all;
-  top: 50%;
+  top: 30%;
 }
 
 .backdrop {

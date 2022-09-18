@@ -20,7 +20,7 @@ const GameBoard = (() => {
   }
 
   const updateBoardDisplay = (square) => {
-    square.removeEventListener('click', GameControls.playableSquare);
+    square.removeEventListener('click', GameControls.playSquare);
     square.classList.remove('playable-square');
   }
 
@@ -28,6 +28,7 @@ const GameBoard = (() => {
   const updateBoardArray = (column, row) => {
     eval(column)[row] = Game.getTurn();
   }
+
   return { updateBoardDisplay, updateBoardArray, resetBoard, col1, col2, col3 }
 })();
 
@@ -77,7 +78,16 @@ const GameControls = (() => {
     }
   }
 
-  const _playableSquare = function() {
+  const previewToken = function() {
+    if (this.textContent === '') {
+      Game.placeToken(this);
+    }
+  }
+  const removePreviewToken = function() {
+    this.textContent = '';
+  }
+  const playSquare = function() {
+    this.removeEventListener('mouseout', removePreviewToken);
     Game.playTurn(this);
   }
 
@@ -94,13 +104,15 @@ const GameControls = (() => {
     })
     const playSquares = document.querySelectorAll('.game-board > div > div');
     for (let i = 0; i < playSquares.length; i++) {
-      playSquares[i].addEventListener('click', _playableSquare);
       playSquares[i].classList.add('playable-square');
+      playSquares[i].addEventListener('click', playSquare);
+      playSquares[i].addEventListener('mouseover', previewToken);
+      playSquares[i].addEventListener('mouseout', removePreviewToken);
     }
-    const body = document.querySelector('body');
+    const page = document.querySelector('html');
     document.addEventListener('click', event => {
       let target = event.target;
-      if (target === body) {
+      if (target === page) {
         _closeModals();
       }
     })
@@ -109,7 +121,9 @@ const GameControls = (() => {
       for (let i=0; i < playSquares.length; i++) {
         playSquares[i].textContent = '';
         playSquares[i].classList.add('playable-square');
-        playSquares[i].addEventListener('click', _playableSquare);
+        playSquares[i].addEventListener('click', playSquare);
+        playSquares[i].addEventListener('mouseover', previewToken);
+        playSquares[i].addEventListener('mouseout', removePreviewToken);
       }
       GameBoard.resetBoard();
       Game.resetTurn();
@@ -117,8 +131,14 @@ const GameControls = (() => {
     })
   }
 
+  const removeEventListeners = (square) => {
+    square.removeEventListener('click', playSquare);
+    square.removeEventListener('mouseover', previewToken);
+  }
+
   return { 
-    setEventListeners, 
+    setEventListeners,
+    removeEventListeners, 
     toggleSetPlayerModal,
     displayPlayerTurn,
     toggleAlertModal
@@ -162,10 +182,10 @@ const Game = (() => {
   const placeToken = (square) => {
     if (currentTurn === "X") {
       square.textContent = "X";
-      square.style.color = "blue";
+      square.style.color = "#5c00e6";
     } else {
       square.textContent = "O";
-      square.style.color = "green";
+      square.style.color = "#00e600";
     }
   }
 
@@ -186,7 +206,7 @@ const Game = (() => {
   const gameOver = () => {
     const playSquares = document.querySelectorAll('.game-board > div > div');
     for (let i=0; i < playSquares.length; i++) {
-      playSquares[i].removeEventListener('click', GameControls.playableSquare);
+      GameControls.removeEventListeners(playSquares[i]);
       playSquares[i].classList.remove('playable-square');
     }
   }
@@ -203,7 +223,6 @@ const Game = (() => {
         GameControls.displayPlayerTurn('Tie!');
         gameOver();
         return
-        // option to play again
       }
       if (isWin()) {
         const _winner = () => { 
