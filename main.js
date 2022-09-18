@@ -208,6 +208,23 @@ const Game = (() => {
     }
   }
 
+  const _winner = () => { 
+    const _tokenOwner = (token) => {
+      if (token === 'X') {
+        return Game.player1.getName();
+      } else {
+        return Game.player2.getName();
+      }
+    }
+    let token = Game.getTurn();
+    if (Game.player1.getName() !== undefined) {
+      let name = _tokenOwner(token);
+      return name
+    } else {
+      return token
+    }
+  }
+
   const playTurn = (square) => {
     if (square.classList.contains('playable-square')) {
       placeToken(square);
@@ -219,22 +236,6 @@ const Game = (() => {
         return
       }
       if (isWin()) {
-        const _winner = () => { 
-          const _tokenOwner = (token) => {
-            if (token === 'X') {
-              return Game.player1.getName();
-            } else {
-              return Game.player2.getName();
-            }
-          }
-          let token = Game.getTurn();
-          if (Game.player1.getName() !== undefined) {
-            let name = _tokenOwner(token);
-            return name
-          } else {
-            return token
-          }
-        }
         GameControls.toggleAlertModal(`${_winner()} wins!`);
         GameControls.displayPlayerTurn(`${_winner()} wins!`);
         gameOver();
